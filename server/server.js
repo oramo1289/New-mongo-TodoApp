@@ -74,13 +74,13 @@ app.patch('/todos/:id', (req, res)=>{
    }
 
    if (_.isBoolean(body.completed) && body.completed) {
-     body.completedAt =new Date().getTime();
+     body.completedAt = new Date().getTime();
    }else {
      body.completed = false;
      body.completedAt = null;
    }
 
-   Todo.findByIdAndUpdate(id, {$set:body}, {new:true}).then((todo)=>{
+   Todo.findByIdAndUpdate(id, {$set:body}, {new:true}).then((todo)=>{//new es pormongoose y es lo mismo que return original de mongodb
      if(!todo){
        return res.status(404).send();
      }
