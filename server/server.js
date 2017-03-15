@@ -6,8 +6,8 @@ const _ = require('lodash');
 // Local
 const {ObjectID} = require('mongodb');
 const {mongoose} = require('./db/mongoose');
-var {Todo} = require('./models/todo');
-// const {User} = require('./models/User');
+const {Todo} = require('./models/todo');
+const {User} = require('./models/User');
 
 var app = express();
 const port = process.env.PORT;
@@ -88,6 +88,21 @@ app.patch('/todos/:id', (req, res)=>{
    }).catch((err)=>{
      res.status(400).send();
    });
+});
+
+app.post('/users', (req, res) =>{
+
+  var body = _.pick(req.body, ['email', 'password']);
+  var user = new User(body);
+
+  user.save().then(() => {
+    return user.generateAuthToken();
+    //res.send(user);
+  }).then((token) => {
+    res.header('x-auth', token).send(user); //buscar header y màs informacion de token
+  }).catch((e) => {
+    res.status(400).send(e);
+  });
 });
 
 app.listen(port, ()=>{
