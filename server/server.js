@@ -80,7 +80,7 @@ app.patch('/todos/:id', (req, res)=>{
      body.completedAt = null;
    }
 
-   Todo.findByIdAndUpdate(id, {$set:body}, {new:true}).then((todo)=>{//new es pormongoose y es lo mismo que return original de mongodb
+   Todo.findByIdAndUpdate(id, {$set:body}, {new:true}).then((todo)=>{//new es por mongoose y es lo mismo que return original de mongodb
      if(!todo){
        return res.status(404).send();
      }
@@ -90,6 +90,7 @@ app.patch('/todos/:id', (req, res)=>{
    });
 });
 
+//POST users
 app.post('/users', (req, res) =>{
 
   var body = _.pick(req.body, ['email', 'password']);
@@ -97,9 +98,11 @@ app.post('/users', (req, res) =>{
 
   user.save().then(() => {
     return user.generateAuthToken();
-    //res.send(user);
+  
   }).then((token) => {
-    res.header('x-auth', token).send(user); //buscar header y màs informacion de token
+    res.header('x-auth', token).send(user); //el goal es que me regrese el
+    //token a travès del header x- es para custom headers,
+    //header('x-header', valueHeader) toma dos valores el nombre del header y el valor del header
   }).catch((e) => {
     res.status(400).send(e);
   });
