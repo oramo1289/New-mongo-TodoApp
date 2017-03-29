@@ -1,13 +1,16 @@
-require('./config/config.js');
+require('./config/config');
 
+const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
-const _ = require('lodash');
-// Local
 const {ObjectID} = require('mongodb');
-const {mongoose} = require('./db/mongoose');
-const {Todo} = require('./models/todo');
-const {User} = require('./models/User');
+// Local
+var {mongoose} = require('./db/mongoose');
+var {Todo} = require('./models/todo');
+var {User} = require('./models/user');
+var {authenticate} = require('./middleware/authenticate');
+
+
 
 var app = express();
 const port = process.env.PORT;
@@ -98,7 +101,7 @@ app.post('/users', (req, res) =>{
 
   user.save().then(() => {
     return user.generateAuthToken();
-  
+
   }).then((token) => {
     res.header('x-auth', token).send(user); //el goal es que me regrese el
     //token a travès del header x- es para custom headers,
@@ -108,8 +111,30 @@ app.post('/users', (req, res) =>{
   });
 });
 
+//MKE7153
+
+
+app.get('/users/me', authenticate, (req, res) => {
+  res.send(req.user);
+});
 app.listen(port, ()=>{
   console.log(`Started on port ${port}`);
 });
 
 module.exports = {app};
+
+// app.get('/users/me', (req, res) => {// es una ruta privada a la que solamente va a acceder después de que el token sea validado
+//   var token = req.header('x-auth'); //req.header es casi igual a res.header()
+// //la diferencia es que uno va a recivir el header que se establecio enteriormente para poder enseñar
+// //la página del usuario perteneciente al header hasheado
+//
+//   User.findByToken(token).then((user)=>{//creamos el model method findByToken en user.js
+//     if (!user) {//es un token valido pero no encontro el documento
+//       //podríamos copiar el res.status(401).send(); pero una mejor forma es con return Promis.reject();
+//       return Promise.reject();// de esta manera se detiene la función y se va a catch para cachar el error y resolverlo
+//     }
+//     res.send(user);
+//   }).catch((e) => {
+//     res.status(401).send();//el 401 es porque el usuario no es correcto
+//   });
+// });
