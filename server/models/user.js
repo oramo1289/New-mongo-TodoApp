@@ -79,10 +79,10 @@ UserSchema.statics.findByToken = function (token) { //los metodos de modelo se g
 UserSchema.pre('save', function(next){
   var user = this;
 
-  if (user.isModified('password')) {
+  if (user.isModified('password')) {//si fue modifiacdo entonces guarda el nuevo password si no sigue adelante
     bcrypt.genSalt(10, (err, salt)=>{
       bcrypt.hash(user.password, salt, (err, hash)=>{
-        user.password = hash;
+        user.password = hash;//el texto plano de user.password lo igualamos al texto ya hasheado
         next();
       });
     });
