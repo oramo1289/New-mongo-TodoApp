@@ -1,36 +1,26 @@
 const {SHA256} = require('crypto-js');
 const jwt = require('jsonwebtoken');
-//
-var data = {
-  id: 10
-};
-var token = jwt.sign(data, '123abc');//el segundo argumento es el secreto que valida que no se haya modificado la infromación y sea confiable es SALT
-console.log(token);
+const bcrypt = require('bcryptjs');
 
-var decoded = jwt.verify(token, '123abc');
-console.log('decoded:', decoded);
-// jwt.verify
-// var message = 'I am user number 3';
-//
-// var hash = SHA256(message).toString();
-//
-// console.log(hash);
+var password = '123abc';//primero creamos la variable
+//antes de hashear el password debemos de llamar dos metódos
+bcrypt.genSalt(12, (err, salt)=>{ // toma dos argumentos rounds el numero de veces que vas a usar para generar el salt el segundo es el callback function
+  bcrypt.hash(password, salt, (err, hash)=>{//tres argumentos el primero es el password a hashear el segundo el el salt que se agreggo arriba y el tercaero el el callback function
+    console.log(hash);
+  });
+});
+
+var hashedPassword = '$2a$12$b//8MpA8o/33b.FqNVER0.drq0GNGouLhHs67qnp/9AoIfdg5zrjK';
+
+bcrypt.compare(password, hashedPassword, (err, res)=>{
+  console.log(res);
+});
 //
 // var data = {
-//   id: 4
+//   id: 10
 // };
+// var token = jwt.sign(data, '123abc');//el segundo argumento es el secreto que valida que no se haya modificado la infromación y sea confiable es SALT
+// console.log(token);
 //
-// var token = {
-//   data,
-//   hash: SHA256(JSON.stringify(data) + 'somesecret').toString()
-// };
-//
-// token.data.id = 5;
-// token.hash = SHA256(JSON.stringify(token.data)).toString();
-// var resultHash = SHA256(JSON.stringify(token.data) + 'somesecret').toString();
-//
-// if (resultHash === token.hash) {
-//   console.log('Confía en el id');
-// }else{
-//   console.log('no confíes es del diablo');
-// }
+// var decoded = jwt.verify(token, '123abc');
+// console.log('decoded:', decoded);
