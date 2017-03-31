@@ -93,7 +93,7 @@ app.patch('/todos/:id', (req, res)=>{
    });
 });
 
-//POST users
+//POST users singup
 app.post('/users', (req, res) =>{
 
   var body = _.pick(req.body, ['email', 'password']);
@@ -111,18 +111,34 @@ app.post('/users', (req, res) =>{
   });
 });
 
-//MKE7153
-
-
 app.get('/users/me', authenticate, (req, res) => {
   res.send(req.user);
 });
+
+//POST /users/login {email, password}
+app.post('/users/login', (req, res) => {
+  var body = _.pick(req.body, ['email', 'password']);
+
+  User.findByCredentials(body.email, body.password).then((user)=>{// necesito encontrar las credenciales de los usuarios que van a ingresar
+//despues en el cao de exito debera regresarme el usuario
+//aqui crearemos un nuevo token respondiendo a la http request
+return user.generateAuthToken().then((token) => {//genera un nuevo token luego en respuesta le decimos que el header tenga el valor del nuevo token
+  res.header('x-auth', token).send(user);//luego envía el usuario con el token asignado
+});
+  }).catch((e) => {//si hay un error lo atrapa y lo enseña
+    res.status(400).send();
+  });
+});
+
 app.listen(port, ()=>{
   console.log(`Started on port ${port}`);
 });
 
 module.exports = {app};
 
+
+//MKE7153
+//con return es con lo que encademnamos para seguir con la promesa then()
 // app.get('/users/me', (req, res) => {// es una ruta privada a la que solamente va a acceder después de que el token sea validado
 //   var token = req.header('x-auth'); //req.header es casi igual a res.header()
 // //la diferencia es que uno va a recivir el header que se establecio enteriormente para poder enseñar
