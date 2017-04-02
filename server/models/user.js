@@ -54,6 +54,17 @@ UserSchema.methods.generateAuthToken = function () {//las instancias de metódos
     return token;
   });//esta regresnado un value que va a representar success  cuando lo llame en server.js
 };
+
+UserSchema.methods.removeToken = function (token) {
+  var user = this;
+  // $pull nos deja eliminar un elemento del array que mache cierto criterio es un operador de mongodb
+  return user.update({
+    $pull: {
+      tokens :{token}
+    }
+  });
+};
+
 UserSchema.statics.findByToken = function (token) { //los metodos de modelo se guardan en la objeto static
   var User = this;//User con u mayúscula es se refiere al modelo
   var decoded;//va a guardar el jwt.verify() y está indefinida porque si hay algún error necesitamos atrparlo y hacer algo con el por eso usaremos try/cath block

@@ -130,6 +130,15 @@ return user.generateAuthToken().then((token) => {//genera un nuevo token luego e
   });
 });
 
+//log out user
+
+app.delete('/users/me/token', authenticate, (req, res) => { // lo que queremos es borrar el token
+  req.user.removeToken(req.token).then(() => {
+    res.status(200).send();
+  }, () => {
+    res.status(400).send();
+  });
+});
 app.listen(port, ()=>{
   console.log(`Started on port ${port}`);
 });
