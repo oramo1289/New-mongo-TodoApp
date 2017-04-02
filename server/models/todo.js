@@ -14,6 +14,10 @@ var Todo = mongoose.model('Todo', {
   completedAt:{
     type: Number,
     default: null
+  },
+  _creator: {//con esta propiedad conectamos todo con user, de está manera para poder crear un nuevo todo necesitas haber hecho login e identificarte
+    type: mongoose.Schema.Types.ObjectId,
+    require: true
   }
 });
 
