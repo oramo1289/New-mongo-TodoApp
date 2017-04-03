@@ -46,7 +46,7 @@ UserSchema.methods.toJSON = function () {//estamos reescribiendo la funcion regu
 UserSchema.methods.generateAuthToken = function () {//las instancias de metódos se guardan en el objeto methods
   var user = this;//this es el usuario
   var access = 'auth';//auth es el string que debe de pasar en el schema
-  var token = jwt.sign({_id: user._id.toHexString(), access}, 'abc123').toString();//es el hashing con el secreto convertido a string
+  var token = jwt.sign({_id: user._id.toHexString(), access}, process.env.JWT_SECRET).toString();//es el hashing con el secreto convertido a string
 
   user.tokens.push({access, token});//push es una funcion para agregar uno o màs elementos al final del array
 
@@ -70,7 +70,7 @@ UserSchema.statics.findByToken = function (token) { //los metodos de modelo se g
   var decoded;//va a guardar el jwt.verify() y está indefinida porque si hay algún error necesitamos atrparlo y hacer algo con el por eso usaremos try/cath block
 
   try {
-    decoded = jwt.verify(token, 'abc123');// si esto genera un error pasamos a catch  y lo resolvemos si todo sale bien pasamos a lo que sigue
+    decoded = jwt.verify(token, process.env.JWT_SECRET);// si esto genera un error pasamos a catch  y lo resolvemos si todo sale bien pasamos a lo que sigue
   } catch (e) {
     // return new Promise((resolve, reject) => {
     //   reject();

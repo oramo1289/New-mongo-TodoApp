@@ -11,7 +11,6 @@ var {User} = require('./models/user');
 var {authenticate} = require('./middleware/authenticate');
 
 
-
 var app = express();
 const port = process.env.PORT;
 
