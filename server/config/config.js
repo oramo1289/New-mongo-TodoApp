@@ -9,6 +9,7 @@ if (env === 'development' || env === 'test') {
   Object.keys(envConfig).forEach((key) => {
     process.env[key] = envConfig[key];
   });
+  // console.log(envConfig);
 }
 //cuando usas una variable para acceder auna propiedad lo haces con [] notation
 
